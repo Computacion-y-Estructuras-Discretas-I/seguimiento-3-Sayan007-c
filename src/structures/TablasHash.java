@@ -9,7 +9,7 @@ public class TablasHash {
     private LinkedList<Integer>[] tabla;
     private int size;
 
-    @SuppressWarnings("unchecked")
+
     public TablasHash(int n) {
         this.tabla = new LinkedList[n];
         this.size = n;
