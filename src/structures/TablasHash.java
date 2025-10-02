@@ -6,69 +6,47 @@ import java.lang.UnsupportedOperationException;
 import java.lang.NullPointerException;
 
 public class TablasHash {
-  private LinkedList<Integer> tabla[];
-  private int size;
-  
-  public int getSize() {
-    return size;
-  }
+    private LinkedList<Integer>[] tabla;
+    private int size;
 
-  public void setSize(int size) {
-    this.size = size;
-  }
+    @SuppressWarnings("unchecked")
+    public TablasHash(int n) {
+        this.tabla = new LinkedList[n];
+        this.size = n;
+    }
 
-  public TablasHash(int n) throws Exception{
-    this.tabla = new LinkedList[n];
-    this.size = n;
-  }
-
-
-  public boolean search(int k, int value) throws Exception{
-    int pos = this.hashFunction(k);
-    LinkedList found = this.tabla[pos];
-    if(found!=null){
-      for(Object c: found){
-        Integer ci = (Integer)c;
-        if(ci==value){
-          return true;
+    public boolean search(int k, int value) {
+        int pos = this.hashFunction(k);
+        LinkedList<Integer> found = this.tabla[pos];
+        if (found != null) {
+            for (Integer c : found) {
+                if (c == value) {
+                    return true;
+                }
+            }
         }
-      }
-    
-  }
-      
-    return false;
-
-  }
-  public void insert(int k, int value) throws Exception{
-    int pos = this.hashFunction(k);
-
-    LinkedList<Integer> found = this.tabla[pos];
-    if (found==null){
-      found = new LinkedList<Integer>();
-      found.add(value);
-      this.tabla[pos] = found;
+        return false;
     }
-    else{
-      found.add(value);
-      this.tabla[pos] = found;
+
+    public void insert(int k, int value) {
+        int pos = this.hashFunction(k);
+        LinkedList<Integer> found = this.tabla[pos];
+        if (found == null) {
+            found = new LinkedList<>();
+            this.tabla[pos] = found;
+        }
+        found.add(value);
     }
-  }
 
+    public void delete(int k, int v) {
+        int pos = this.hashFunction(k);
+        LinkedList<Integer> found = this.tabla[pos];
+        if (found != null) {
+            found.remove((Integer) v);
+        }
+    }
 
-  public void delete(int k, int v) throws Exception{
-    int pos = this.hashFunction(k);
-
-    LinkedList<Integer> found = this.tabla[pos];
-    
-    found.remove((Integer)v);
-
-    this.tabla[pos] = found;
-
-  }
-
-  private int hashFunction(int k) throws Exception{
-    
-    return k % this.size;
-
-  }
+    private int hashFunction(int k) {
+        return Math.abs(k) % this.size;
+    }
 }

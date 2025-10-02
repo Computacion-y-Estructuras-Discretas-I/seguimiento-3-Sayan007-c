@@ -1,6 +1,9 @@
 package ui;
 
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
+
 import structures.PilaGenerica;
 import structures.TablasHash;
 
@@ -12,7 +15,7 @@ public class Main {
         sc = new Scanner(System.in);
     }
 
-    public void ejecutar() throws Exception {
+    public void ejecutar() {
         while (true) {
             System.out.println("\nSeleccione la opcion:");
             System.out.println("1. Punto 1, Verificar balanceo de expresión");
@@ -21,7 +24,7 @@ public class Main {
             System.out.print("Opcion: ");
 
             int opcion = sc.nextInt();
-            sc.nextLine(); 
+            sc.nextLine();
 
             switch (opcion) {
                 case 1:
@@ -64,8 +67,24 @@ public class Main {
      * @return true si esta balanceada, false si no
      */
     public boolean verificarBalanceo(String s) {
-        // TODO: completar 
-        return false;
+        PilaGenerica<Character> pila = new PilaGenerica<>(s.length());
+
+        for (char c : s.toCharArray()) {
+            if (c == '(' || c == '[' || c == '{') {
+                pila.Push(c);
+            } else if (c == ')' || c == ']' || c == '}') {
+                if (pila.isEmpty()) return false;
+                Character tope = pila.Pop();
+                if (tope == null || !coinciden(tope, c)) return false;
+            }
+        }
+        return pila.isEmpty();
+    }
+
+    private boolean coinciden(char apertura, char cierre) {
+        return (apertura == '(' && cierre == ')') ||
+                (apertura == '[' && cierre == ']') ||
+                (apertura == '{' && cierre == '}');
     }
 
     /**
@@ -74,10 +93,27 @@ public class Main {
      * @param objetivo suma objetivo
      */
     public void encontrarParesConSuma(int[] numeros, int objetivo) {
-        // TODO: completar
+        TablasHash tabla = new TablasHash(numeros.length * 2);
+        Set<String> pares = new HashSet<>();
+
+        for (int num : numeros) {
+            int complemento = objetivo - num;
+            if (tabla.search(complemento, complemento)) {
+                int menor = Math.min(num, complemento);
+                int mayor = Math.max(num, complemento);
+                pares.add("(" + menor + ", " + mayor + ")");
+            }
+            tabla.insert(num, num);
+        }
+
+        if (pares.isEmpty()) {
+            System.out.println("No se encontraron pares.");
+        } else {
+            System.out.println("Pares encontrados: " + pares);
+        }
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Main app = new Main();
         app.ejecutar();
     }
